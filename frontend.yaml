@@ -1,0 +1,31 @@
+name:  install Nginx Web Server
+hosts: front-end
+becomes: yes
+tasks:
+  - name: install Nginx
+    ansible.builtin.dnf: 
+      name: nginx
+      state: present
+
+  - name: Enable & start nginx
+    ansible.builtin.service:
+      name: front-end
+      enabled: yes
+      state: started
+  
+  - name: Remove the default content that web server is serving.
+    ansible.builtin.command: rm -rf /usr/share/nginx/html/*
+
+  - name: Download the frontend content
+    ansible.builtin.command: curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+
+  - name: Extract the frontend content.
+    ansible.builtin.command: cd /usr/share/nginx/html
+
+  - name: unzip
+    ansible.builtin.command: unzip /tmp/frontend.zip
+
+  - name: Restart Nginx Service
+    ansible.builtin.service:
+      name: nginx
+      state: Restart
