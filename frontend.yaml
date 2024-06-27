@@ -1,43 +1,43 @@
-name:  install Nginx Web Server
-hosts: frontend
-becomes: yes
-tasks:
-  - name: install Nginx
-    ansible.builtin.dnf: 
-      name: nginx
-      state: present
+- name:  install Nginx Web Server
+  hosts: frontend
+  becomes: yes
+  tasks:
+    - name: install Nginx
+      ansible.builtin.dnf: 
+        name: nginx
+        state: present
 
-  - name: Enable & start nginx
-    ansible.builtin.service:
-      name: frontend
-      enabled: yes
-      state: started
-  
-  - name: Remove the default content that web server is serving.
-    ansible.builtin.command: rm -rf /usr/share/nginx/html/*
+    - name: Enable & start nginx
+      ansible.builtin.service:
+        name: frontend
+        enabled: yes
+        state: started
+    
+    - name: Remove the default content that web server is serving.
+      ansible.builtin.command: rm -rf /usr/share/nginx/html/*
 
-  - name: remove old directory 
-    ansible.builtin.file: 
-      path: /usr/share/nginx/html
-      state: absent
+    - name: remove old directory 
+      ansible.builtin.file: 
+        path: /usr/share/nginx/html
+        state: absent
 
-  - name: add directory 
-    ansible.builtin.file: 
-      path: /usr/share/nginx/html
-      state: directory
+    - name: add directory 
+      ansible.builtin.file: 
+        path: /usr/share/nginx/html
+        state: directory
 
-  - name: unzip 
-    ansible.builtin.unarchive:
-      src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
-      dest: /usr/share/nginx/html
-      remote_src: yes
+    - name: unzip 
+      ansible.builtin.unarchive:
+        src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+        dest: /usr/share/nginx/html
+        remote_src: yes
 
-  - name: copying service
-    ansible.builtin.copy:
-      src: expense.conf
-      dest: /etc/nginx/default.d/expense.conf
+    - name: copying service
+      ansible.builtin.copy:
+        src: expense.conf
+        dest: /etc/nginx/default.d/expense.conf
 
-  - name: Restart Nginx Service
-    ansible.builtin.service:
-      name: nginx
-      state: Restart
+    - name: Restart Nginx Service
+      ansible.builtin.service:
+        name: nginx
+        state: Restart
